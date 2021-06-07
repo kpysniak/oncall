@@ -4,6 +4,7 @@
 # -*- coding:utf-8 -*-
 
 import yaml
+import re
 from uuid import uuid4
 from ujson import loads as json_loads, dumps as json_dumps
 from falcon import HTTPBadRequest
@@ -30,7 +31,11 @@ def update_notification(x, y):
 
 def read_config(config_path):
     with open(config_path, 'r', encoding='utf8') as config_file:
-        return yaml.safe_load(config_file)
+        tag='!ENV'
+        pattern = re.compile('.*?\${(\w+)}.*?')
+        loader = yaml.SafeLoader
+        loader.add_implicit_resolver(tag, pattern, None)
+        return yaml.load(config_file)
 
 
 def create_notification(context, team_id, role_ids, type_name, users_involved, cursor, **kwargs):

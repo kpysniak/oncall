@@ -2,6 +2,7 @@
 # See LICENSE in the project root for license information.
 import sys
 import yaml
+import re
 import logging
 import logging.handlers
 import time
@@ -34,8 +35,12 @@ default_timezone = None
 
 
 def load_config_file(config_path):
-    with open(config_path) as h:
-        config = yaml.safe_load(h)
+    with open(config_path) as config_file:
+        tag='!ENV'
+        pattern = re.compile('.*?\${(\w+)}.*?')
+        loader = yaml.SafeLoader
+        loader.add_implicit_resolver(tag, pattern, None)
+        config = loader.load(config_file)
 
     if 'init_config_hook' in config:
         try:
@@ -133,7 +138,11 @@ def metrics_sender():
 
 def main():
     with open(sys.argv[1], 'r') as config_file:
-        config = yaml.safe_load(config_file)
+        tag='!ENV'
+        pattern = re.compile('.*?\${(\w+)}.*?')
+        loader = yaml.SafeLoader
+        loader.add_implicit_resolver(tag, pattern, None)
+        config = loader.load(config_file)
 
     init_notifier(config)
     metrics_on = False

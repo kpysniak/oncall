@@ -10,9 +10,9 @@ db:
   conn:
     kwargs:
       scheme: mysql+pymysql
-      user: root
-      password: "1234"
-      host: 127.0.0.1
+      user: oncall
+      password: "exit"
+      host: mysql-staging.forte.ws
       port: 3306
       database: oncall
       charset: utf8

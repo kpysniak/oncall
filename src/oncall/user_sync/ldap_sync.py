@@ -4,6 +4,7 @@ monkey.patch_all()  # NOQA
 import sys
 import time
 import yaml
+import re
 import logging
 import ldap
 
@@ -439,5 +440,10 @@ def main(config):
 if __name__ == '__main__':
     config_path = sys.argv[1]
     with open(config_path, 'r') as config_file:
-        config = yaml.safe_load(config_file)
+        tag='!ENV'
+        pattern = re.compile('.*?\${(\w+)}.*?')
+        loader = yaml.SafeLoader
+        loader.add_implicit_resolver(tag, pattern, None)
+
+        config = loader.load(config_file)
     main(config)
