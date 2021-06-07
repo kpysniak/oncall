@@ -12,7 +12,7 @@ db:
       scheme: mysql+pymysql
       user: oncall
       password: "exit"
-      host: mysql-staging.forte.ws
+      host: !ENV ${DB_HOST}
       port: 3306
       database: oncall
       charset: utf8
